@@ -15,7 +15,8 @@ class AutoTrader(BaseAutoTrader):
 
     def on_error_message(self, client_order_id: int, error_message: bytes) -> None:
         """Called when the exchange detects an error."""
-        self.logger.warning("error with order %d: %s", client_order_id, error_message.decode())
+        self.logger.warning("error with order %d: %s",
+                            client_order_id, error_message.decode())
         self.on_order_status_message(client_order_id, 0, 0, 0)
 
     def on_order_book_update_message(self, instrument: int, sequence_number: int, ask_prices: List[int],
@@ -35,12 +36,14 @@ class AutoTrader(BaseAutoTrader):
             if self.bid_id == 0 and best_bid != 0:
                 self.bid_id = next(self.order_ids)
                 self.bid_price = best_bid
-                self.send_insert_order(self.bid_id, Side.BUY, best_bid, 1, Lifespan.GOOD_FOR_DAY)
+                self.send_insert_order(
+                    self.bid_id, Side.BUY, best_bid, 1, Lifespan.GOOD_FOR_DAY)
 
             if self.ask_id == 0 and best_ask != 0:
                 self.ask_id = next(self.order_ids)
                 self.ask_price = best_ask
-                self.send_insert_order(self.ask_id, Side.SELL, best_ask, 1, Lifespan.GOOD_FOR_DAY)
+                self.send_insert_order(
+                    self.ask_id, Side.SELL, best_ask, 1, Lifespan.GOOD_FOR_DAY)
 
     def on_order_status_message(self, client_order_id: int, fill_volume: int, remaining_volume: int, fees: int) -> None:
         """Called when the status of one of your orders changes."""
